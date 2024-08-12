@@ -2,7 +2,9 @@ import path from "path";
 import fs from "fs/promises";
 
 const ProductDetailPage = (props) => {
-    const { loadedProduct: { title, description } } = props;
+  const {
+    loadedProduct: { title, description },
+  } = props;
   return (
     <>
       <h1>{title}</h1>
@@ -24,6 +26,17 @@ export async function getStaticProps(context) {
     props: {
       loadedProduct: product,
     },
+  };
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { pid: "p1" } },
+      { params: { pid: "p2" } },
+      { params: { pid: "p3" } },
+    ],
+    fallback: false,
   };
 }
 
