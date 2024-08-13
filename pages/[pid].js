@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
+import { notFound } from "next/navigation";
 
 const ProductDetailPage = (props) => {
   const { loadedProduct } = props;
@@ -21,6 +22,8 @@ export async function getStaticProps(context) {
   const data = await getData();
   const product = data.products.find((product) => product.id === productId);
 
+  if (!product) return { notFound: true };
+
   return {
     props: {
       loadedProduct: product,
@@ -35,14 +38,14 @@ async function getData() {
 }
 
 export async function getStaticPaths() {
-  const path = await getData();
+  const data = await getData();
   const ids = data.products.map((product) => product.id);
 
   const pathsWithParams = ids.map((id) => ({ params: { pid: id } }));
 
   return {
     paths: pathsWithParams,
-    fallback: false,
+    fallback: true,
   };
 }
 
