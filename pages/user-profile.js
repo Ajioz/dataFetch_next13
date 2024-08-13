@@ -3,7 +3,7 @@ import React from "react";
 const UserProfilePage = (props) => {
   return (
     <div>
-      <h1>User: {props.username}</h1>
+      <h1>User : {props.username}</h1>
     </div>
   );
 };
