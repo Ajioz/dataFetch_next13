@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 
-const LastSalesPage = () => {
-  const [sales, setSales] = useState();
-  //   const [isLoading, setIsLoading] = useState(false);
-
+const LastSalesPage = (props) => {
+  const [sales, setSales] = useState(props.sales);
+  
   // useSWR(<request-url>, ("firebase-url/sales.json") => fetch(url).then(res => res.json()))
   const { data, error } = useSWR("firebase-url/sales.json");
-
+  
+  //   const [isLoading, setIsLoading] = useState(false);
   //   useEffect(() => {
   //     setIsLoading(true);
   //     fetch("firebase-url/sales.json")
@@ -44,7 +44,7 @@ const LastSalesPage = () => {
   }, [data]);
 
   if (error) return <p>Failed to load</p>;
-  if (!data || !sales) return <p>Loading...</p>;
+  if (!data && !sales) return <p>Loading...</p>;
 
   return (
     <>
@@ -60,3 +60,23 @@ const LastSalesPage = () => {
 };
 
 export default LastSalesPage;
+
+export async function getStaticProps(context) {
+  const res = await fetch("firebase-url/sales.json");
+  const data = res.json();
+
+  const transformSales = [];
+  for (const key in data) {
+    transformSales.push({
+      id: key,
+      username: data[key].username,
+      volume: data[key].volume,
+    });
+  }
+  return {
+    props: {
+      sales: transformSales,
+    },
+    revalidate: 20,
+  };
+}
